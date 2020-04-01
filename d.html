@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>树组件</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+
+<body>
+    <form class="layui-form" action="">
+        <input type="checkbox" name="zzz" lay-skin="switch" lay-filter="switchTest" lay-text="开启|关闭">
+    </form>
+    <div id="test1"></div>
+    <button onclick="a()">dfsa</button>
+    <script src="layui/layui.js"></script>
+    <script>
+    var a;
+    layui.use(['tree', 'jquery', 'form'], function() {
+        var form = layui.form
+        var tree = layui.tree;
+        var $ = layui.jquery;
+        //监听指定开关
+        form.on('switch(switchTest)', function(data) {
+            if (this.checked) {
+                //可以重载所有基础参数
+                tree.reload('demoId', {
+                    isLink: true
+                });
+            } else { 
+            	tree.reload('demoId', {
+                    isLink: false
+                });
+            }
+        });
+        //渲染
+        var inst1 = tree.render({
+            elem: '#test1' //绑定元素
+                ,
+            id: 'demoId' //定义索引
+                ,
+            showCheckbox: true,
+            data: [{
+                title: '江西' //一级菜单
+                    ,
+                id: 1,
+                children: [{
+                    title: '南昌' //二级菜单
+                        ,
+                    id: 2,
+                    children: [{
+                        title: '高新区' //三级菜单
+                            //…… //以此类推，可无限层级
+                            ,
+                        id: 3
+                    }]
+                }]
+            }, {
+                title: '陕西' //一级菜单
+                    ,
+                id: 4,
+                children: [{
+                    title: '西安' //二级菜单
+                        ,
+                    id: 5
+                },{
+                    title: '华师大' //二级菜单
+                        ,
+                    id: 6
+                }
+                ]
+            }]
+        });
+
+        //
+        a = function() {
+
+            //获得选中的节点
+            var checkData = tree.getChecked('demoId');
+            console.log(checkData)
+            //
+            var arr = [];
+
+            function loop_data(checkData) {
+                $.each(checkData, function(i, v) {
+                    arr.push(v.id);
+                    if (v.children) {
+                        loop_data(v.children)
+                    }
+                })
+            }
+            loop_data(checkData);
+            arr = arr.join(',');
+            console.log(arr);
+        }
+
+
+    });
+    </script>
+</body>
+
+</html>
